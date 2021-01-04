@@ -179,6 +179,9 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   @Override
   public void startDocument() throws IOException {}
 
+  /**
+   * 每次存储一个document,就调用一次,但是不一定每一次都会flush,可能只是仅仅存在内存里?
+   */
   @Override
   public void finishDocument() throws IOException {
     if (numBufferedDocs == this.numStoredFields.length) {
@@ -243,6 +246,10 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
     saveInts(lengths, numBufferedDocs, fieldsStream);
   }
 
+  /**
+   * 是否要flush. 当前缓冲区大小大于一个chunk,或者当前缓冲的doc数量大于最大docs数量,就flush.
+   * Field信息时,是4096 和 10 * 48kb
+   */
   private boolean triggerFlush() {
     return bufferedDocs.size() >= chunkSize
         || // chunks of at least chunkSize bytes

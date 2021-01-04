@@ -597,6 +597,7 @@ final class IndexingChain implements Accountable {
 
     termsHash.startDocument();
 
+    // 开始处理一个doc的fields存储
     startStoredFields(docID);
     try {
       for (IndexableField field : document) {
@@ -608,6 +609,7 @@ final class IndexingChain implements Accountable {
         for (int i = 0; i < fieldCount; i++) {
           fields[i].finish(docID);
         }
+        // 完成, 处理一个doc的fields存储, 中间有调用每一个
         finishStoredFields();
       }
     }
