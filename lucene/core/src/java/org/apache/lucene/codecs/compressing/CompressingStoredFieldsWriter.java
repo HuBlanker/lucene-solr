@@ -180,7 +180,9 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
   public void startDocument() throws IOException {}
 
   /**
-   * 每次存储一个document,就调用一次,但是不一定每一次都会flush,可能只是仅仅存在内存里?
+   * 每次存储一个document,就调用一次,但是不一定每一次都会flush,
+   * 在writeField中，已经把对应的内容写到byteBuffer里面了.
+   * 这里做一些clean,reset工作，然后如果缓冲的多了，就flush一下
    */
   @Override
   public void finishDocument() throws IOException {
@@ -292,6 +294,7 @@ public final class CompressingStoredFieldsWriter extends StoredFieldsWriter {
     bufferedDocs.reset();
   }
 
+  // 需要stored的field，调用这个进行写入，我要测试一下这里具体都写了什么进去
   @Override
   public void writeField(FieldInfo info, IndexableField field) throws IOException {
 
